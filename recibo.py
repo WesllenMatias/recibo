@@ -55,6 +55,22 @@ class GeraRecibo:
         self.dt_nasc = input("Informe a Data de Nascimento:")
         self.n_mae = input("Nome da Mãe:")
         self.end_prest = input("Endereço:")
+        
+        GeraRecibo.con
+        GeraRecibo.c.execute("""
+        INSERT INTO cad_empresa (nome_prestador,cpf,identidade,emissor,data_nascimento,nome_mae,endereco_prestador) VALUES (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+        """, (self.nome,self.cpf,self.identidade,self.orgao_emissor,self.dt_nasc,self.n_mae,self.end_prest))
+        GeraRecibo.con.commit()
+        GeraRecibo.con.close()
 
 
 GeraRecibo().cadastro_empresa()

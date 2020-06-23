@@ -41,6 +41,6 @@ CREATE TABLE recibos (
 
 c.execute(tabela_cad_empresa)
 c.execute(tabela_cad_prestador)
-#c.execute(tabela_recibo)
+c.execute(tabela_recibo)
 con.commit()
 con.close()
