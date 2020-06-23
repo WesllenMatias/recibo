@@ -47,7 +47,6 @@ class GeraRecibo:
         #GeraRecibo.pdf.save()
         
     def cadastro_prestador(self):
-        print("------------Cadastro de Prestador---------------")
         self.nome = input("Informe o Nome Completo do Prestador de Serviço:")
         self.cpf = input("Informe o CPF:")
         self.identidade = input("Informe o Número da Identidade:")
