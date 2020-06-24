@@ -1,4 +1,5 @@
 import sqlite3
+import pprint
 from reportlab.pdfgen import canvas
 
 class GeraRecibo:
@@ -6,7 +7,7 @@ class GeraRecibo:
     con = sqlite3.connect('recibo.db')
     c = con.cursor()
     
-    pdf = canvas.Canvas("nome_do_pdf.pdf")
+    
 
     def cadastro_empresa(self):
         #self.id = 1
@@ -30,21 +31,26 @@ class GeraRecibo:
         GeraRecibo.con.close()
         
     def gerapdf(self):
-        a = GeraRecibo()
-        print(self.razao_social)
-        #self.texto_rec = "Recebi da(o) " + a.razao_social +", CNPJ: "+ a.cnpj + ","
-        #self.texto_rec2 = "a importância de R$ XXXX,XX pela prestação de serviços referentes a:"
-        #self.texto_rec3 ="XXXXXXXXX XXXX XXXXXX."
-        #GeraRecibo.pdf.setFont('Courier-Bold', 20)
-        #GeraRecibo.pdf.drawCentredString(300,770,"Recibo de Pagamento de Autônomo - RPA")
-        #eraRecibo.pdf.line(30,750,550,750)
-        #GeraRecibo.pdf.setFont('Courier', 12)
-        #GeraRecibo.pdf.setTitle("Recibo")
-        #GeraRecibo.pdf.drawString(50,680, self.texto_rec)
-        #eraRecibo.pdf.drawString(50,660, self.texto_rec2)
-        #eraRecibo.pdf.drawString(50,640, self.texto_rec3)
-        #GeraRecibo.pdf.line(30,750,550,750)
-        #GeraRecibo.pdf.save()
+        cnpj_recibo = input("Informe o CNPJ da Empresa: ")
+        GeraRecibo.con
+        GeraRecibo.c.execute("""SELECT razao,cnpj,empresa FROM cad_empresa WHERE cnpj = ?""", [cnpj_recibo])
+        emp = GeraRecibo.c.fetchone()
+        pprint.pprint(emp)
+        arquivo = str(emp[2])
+        pdf = canvas.Canvas("{}.pdf".format(arquivo))
+        self.texto_rec = "Recebi da(o) " + str(emp[0]) +", CNPJ: "+ str(emp[1]) + ","
+        self.texto_rec2 = "a importância de R$ XXXX,XX pela prestação de serviços referentes a:"
+        self.texto_rec3 ="XXXXXXXXX XXXX XXXXXX."
+        pdf.setFont('Courier-Bold', 20)
+        pdf.drawCentredString(300,770,"Recibo de Pagamento de Autônomo - RPA")
+        pdf.line(30,750,550,750)
+        pdf.setFont('Courier', 12)
+        pdf.setTitle("Recibo")
+        pdf.drawString(50,680, self.texto_rec)
+        pdf.drawString(50,660, self.texto_rec2)
+        pdf.drawString(50,640, self.texto_rec3)
+        pdf.line(30,750,550,750)
+        pdf.save()
         
     def cadastro_prestador(self):
         self.nome = input("Informe o Nome Completo do Prestador de Serviço:")
@@ -58,8 +64,7 @@ class GeraRecibo:
         
         GeraRecibo.con
         GeraRecibo.c.execute("""
-        INSERT INTO cad_empresa (nome_prestador,cpf,identidade,emissor,data_nascimento,nome_mae,endereco_prestador) VALUES (
-            ?,
+        INSERT INTO cad_prestador (nome_prestador,cpf,identidade,emissor,data_nasc,nome_mae,endereco_prestador) VALUES (
             ?,
             ?,
             ?,
@@ -72,10 +77,25 @@ class GeraRecibo:
         GeraRecibo.con.commit()
         GeraRecibo.con.close()
 
+    def listar_cad_empresa(self):
+        GeraRecibo.con
+        for linha in GeraRecibo.c.execute("SELECT empresa,razao,cnpj FROM cad_empresa"):
+            pprint.pprint(linha)
+                        
+        GeraRecibo.con.close()
+        
+    def listar_cad_prestador(self):
+        GeraRecibo.con
+        for linha in GeraRecibo.c.execute("SELECT nome_prestador,cpf,identidade FROM cad_prestador"):
+            pprint.pprint(linha)
+            
+        GeraRecibo.con.close()        
 
-GeraRecibo().cadastro_empresa()
+#GeraRecibo().cadastro_empresa()
 #GeraRecibo().cadastro_prestador()
-#GeraRecibo().gerapdf()
+GeraRecibo().gerapdf()
+#GeraRecibo().listar_cad_empresa()
+#GeraRecibo().listar_cad_prestador()
 
 
 
