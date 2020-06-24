@@ -31,16 +31,20 @@ class GeraRecibo:
         GeraRecibo.con.close()
         
     def gerapdf(self):
-        cnpj_recibo = input("Informe o CNPJ da Empresa: ")
+        cnpj_recibo = input("Informe o CNPJ da Empresa Cadastrada: ")
+        cpf_prestador = input("Informe o CPF do Prestador Cadastrado: ")
+        serv = input("Informe o Serviço Prestado: ")
+        vlr = input("Informe o Valor do Serviço Prestado: ")
         GeraRecibo.con
         GeraRecibo.c.execute("""SELECT razao,cnpj,empresa FROM cad_empresa WHERE cnpj = ?""", [cnpj_recibo])
+        GeraRecibo.c.execute("""SELECT nome_prestador,cpf,identidade,data_nasc,nome_mae FROM cad_prestador WHERE cpf = ?""", [cpf_prestador])
         emp = GeraRecibo.c.fetchone()
         pprint.pprint(emp)
         arquivo = str(emp[2])
-        pdf = canvas.Canvas("{}.pdf".format(arquivo))
+        pdf = canvas.Canvas("{}-{}.pdf".format(arquivo,))
         self.texto_rec = "Recebi da(o) " + str(emp[0]) +", CNPJ: "+ str(emp[1]) + ","
-        self.texto_rec2 = "a importância de R$ XXXX,XX pela prestação de serviços referentes a:"
-        self.texto_rec3 ="XXXXXXXXX XXXX XXXXXX."
+        self.texto_rec2 = "a importância de R$ {} pela prestação de serviços referentes a:".format(vlr)
+        self.texto_rec3 ="{}.".format(serv)
         pdf.setFont('Courier-Bold', 20)
         pdf.drawCentredString(300,770,"Recibo de Pagamento de Autônomo - RPA")
         pdf.line(30,750,550,750)

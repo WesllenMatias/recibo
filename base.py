@@ -6,20 +6,21 @@ c = con.cursor()
 
 tabela_cad_empresa = """
 CREATE TABLE cad_empresa (
-    id_empresa INTEGER PRIMARY KEY,
+    id_empresa INT PRIMARY KEY,
     empresa TEXT,
     razao TEXT,
-    cnpj INTEGER,
+    cnpj INT,
     endereco TEXT
 )
 """
 tabela_cad_prestador = """
 CREATE TABLE cad_prestador(
-    id_prestador INTEGER PRIMARY KEY,
+    id_prestador INT PRIMARY KEY,
     nome_prestador TEXT,
-    cpf INTEGER,
-    identidade INTEGER,
+    cpf INT,
+    identidade INT,
     emissor TEXT,
+    insc_municipal INT,
     data_nasc DATE,
     nome_mae TEXT NOT NULL,
     endereco_prestador TEXT NOT NULL
@@ -27,8 +28,8 @@ CREATE TABLE cad_prestador(
 """
 tabela_recibo = """
 CREATE TABLE recibos (
-    id_recibo INTEGER PRIMARY KEY,
-    n_recibo INTEGER,
+    id_recibo INT PRIMARY KEY,
+    n_recibo INT,
     valor_bruto REAL,
     valor_liquido REAL,
     pis REAL,
