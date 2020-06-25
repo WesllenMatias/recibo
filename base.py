@@ -29,7 +29,7 @@ CREATE TABLE cad_prestador(
 tabela_recibo = """
 CREATE TABLE recibos (
     id_recibo INT PRIMARY KEY,
-    n_recibo INT,
+    servico TEXT,
     valor_bruto REAL,
     valor_liquido REAL,
     pis REAL,

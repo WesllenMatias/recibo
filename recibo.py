@@ -35,7 +35,24 @@ class GeraRecibo:
         cpf_prestador = input("Informe o CPF do Prestador Cadastrado: ")
         serv = input("Informe o Serviço Prestado: ")
         vlr = input("Informe o Valor do Serviço Prestado: ")
+        pis_prest = 0
+        inss_prest = float(vlr) * 0.11
+        irrf_prest = float(vlr) * 0.0
+        iss_prest = float(vlr) * 0.0 
+        vlr_lq = float(vlr) - float(inss) - float(irrf) - float(iss) - float(pis_prest)
         GeraRecibo.con
+        GeraRecibo.c.execute("""
+        INSERT INTO recibo (servico,valor_bruto,valor_liquido,pis,inss,irrf,iss) VALUES (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+        """,(serv,vlr,vlr_lq,pis_prest,inss_prest,irrf_prest,iss_prest))
+
         GeraRecibo.c.execute("""SELECT razao,cnpj,empresa FROM cad_empresa WHERE cnpj = ?""", [cnpj_recibo])
         emp = GeraRecibo.c.fetchone()
         
