@@ -28,30 +28,22 @@ class GeraRecibo:
         )
         """, (self.empresa,self.razao_social,self.cnpj,self.end_empresa))
         GeraRecibo.con.commit()
-        GeraRecibo.con.close()
+        #GeraRecibo.con.close()
         
     def gerapdf(self):
         cnpj_recibo = input("Informe o CNPJ da Empresa Cadastrada: ")
         cpf_prestador = input("Informe o CPF do Prestador Cadastrado: ")
         serv = input("Informe o Serviço Prestado: ")
         vlr = input("Informe o Valor do Serviço Prestado: ")
-        pis_prest = 0
-        inss_prest = float(vlr) * 0.11
-        irrf_prest = float(vlr) * 0.0
-        iss_prest = float(vlr) * 0.0 
-        vlr_lq = float(vlr) - float(inss) - float(irrf) - float(iss) - float(pis_prest)
+        base_calc = float(vlr)
+        pis_prest = 0.0
+        inss_prest = base_calc * 0.11
+        irrf_prest = base_calc * 0.0
+        iss_prest = base_calc * 0.0 
+        vlr_lq = base_calc - inss_prest - irrf_prest - iss_prest - pis_prest
         GeraRecibo.con
-        GeraRecibo.c.execute("""
-        INSERT INTO recibo (servico,valor_bruto,valor_liquido,pis,inss,irrf,iss) VALUES (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?
-        )
-        """,(serv,vlr,vlr_lq,pis_prest,inss_prest,irrf_prest,iss_prest))
+        
+
 
         GeraRecibo.c.execute("""SELECT razao,cnpj,empresa FROM cad_empresa WHERE cnpj = ?""", [cnpj_recibo])
         emp = GeraRecibo.c.fetchone()
@@ -61,7 +53,7 @@ class GeraRecibo:
                                 FROM cad_prestador WHERE cpf = ?""", [cpf_prestador])
         prest = GeraRecibo.c.fetchone()
         
-        pprint.pprint(emp)
+        #pprint.pprint(emp)
         desc_emp = str(emp[2])
         desc_emp1 = str(prest[0])
         n_comp = str(prest[1])
@@ -76,6 +68,17 @@ class GeraRecibo:
         self.texto_rec5 = "CPF: {}".format(n_comp)
         self.texto_rec4 = "C.I.: {}".format(cpf_prest)
         self.texto_rec7 = "Nome da Mãe: {}".format(n_mae)
+        
+        GeraRecibo.c.execute("""INSERT INTO recibos (servico,valor_bruto,valor_liquido,pis,inss,irrf,iss) VALUES (
+                                ?,
+                                ?,
+                                ?,
+                                ?,
+                                ?,
+                                ?,
+                                ?)""",(serv,vlr,vlr_lq,pis_prest,inss_prest,irrf_prest,iss_prest))
+        GeraRecibo.con.commit()
+        
         pdf.setFont('Courier-Bold', 20)
         pdf.drawCentredString(300,770,"Recibo de Pagamento de Autônomo - RPA")
         pdf.line(30,750,550,750)
@@ -89,7 +92,8 @@ class GeraRecibo:
         pdf.drawString(50,520, self.texto_rec5)
         pdf.drawString(50,540, self.texto_rec6)
         pdf.drawString(50,480, self.texto_rec7)
-        pdf.line(30,750,550,750)
+        pdf.line(30,440,550,440)
+        
         pdf.save()
         
     def cadastro_prestador(self):
@@ -115,14 +119,14 @@ class GeraRecibo:
         )
         """, (self.nome,self.cpf,self.identidade,self.orgao_emissor,self.dt_nasc,self.n_mae,self.end_prest))
         GeraRecibo.con.commit()
-        GeraRecibo.con.close()
+        #GeraRecibo.con.close()
 
     def listar_cad_empresa(self):
         GeraRecibo.con
         for linha in GeraRecibo.c.execute("SELECT empresa,razao,cnpj FROM cad_empresa"):
             pprint.pprint(linha)
                         
-        GeraRecibo.con.close()
+        #GeraRecibo.con.close()
         
     def listar_cad_prestador(self):
         GeraRecibo.con
